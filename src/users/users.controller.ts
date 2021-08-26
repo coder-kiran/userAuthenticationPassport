@@ -5,12 +5,16 @@ import {
   Param,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { ItemService } from 'src/Items/items.services';
 import { UserLoginDTO } from './dto/login-dto.dto';
 import { UserDTO } from './dto/user-dto.dto';
 import { UserDocument, UserSchemaClass } from './schemas/user-schema.schema';
-import { UserService } from './user.service';
+import { UserService } from './users.service';
 
 var phoneToken = require('generate-sms-verification-code');
 var generatedToken =0;
@@ -25,6 +29,8 @@ constructor(private readonly userService: UserService,private readonly itemServi
 
 @Post('signup')
 signUpUser(@Body() gettingUserData: UserDTO): Promise<UserSchemaClass> {
+  console.log('signup', gettingUserData);
+  
   console.log('isphonenumberverified =>',isphonenumberverified);
   if(isphonenumberverified){
    return this.userService.signUpUser(gettingUserData);
@@ -45,11 +51,12 @@ signUpWithOtp(@Body() body) {
   }
  
 } 
-
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async loginUser(@Body() gettingLoginData): Promise<string>{   
-  return  this.userService.loginUser(gettingLoginData);   
-  }
+  async login(@Request() req){  
+    console.log('3. user guard accepted');     
+  return  `WELCOME, ${req.user.fname} ${req.user.lname}`;
+     }
 
   @Get('item')
   getItem() {

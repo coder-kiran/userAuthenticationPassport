@@ -17,6 +17,10 @@ export class UserSchemaClass {
 
   @IsString()
   @IsNotEmpty()
+  readonly username: string;
+
+  @IsString()
+  @IsNotEmpty()
   @Prop()
   readonly fname: string;
 

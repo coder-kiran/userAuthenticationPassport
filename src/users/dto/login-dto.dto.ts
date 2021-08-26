@@ -8,7 +8,7 @@ import {
 
 export class UserLoginDTO {
 
-  readonly email: string;
+  readonly username: string;
   readonly password: string;
   
 }
