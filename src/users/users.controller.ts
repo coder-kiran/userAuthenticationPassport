@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { ItemService } from 'src/Items/items.services';
 import { UserLoginDTO } from './dto/login-dto.dto';
@@ -53,6 +54,8 @@ signUpWithOtp(@Body() body) {
   }
  
 } 
+
+// USE GUARDS 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req){  
@@ -61,7 +64,13 @@ signUpWithOtp(@Body() body) {
   //return  `WELCOME, ${req.user.fname} ${req.user.lname}`;
      }
 
-  @Get('item')
+  //  @UseGuards(JwtAuthGuard)
+  //   @Get('profile')
+  //   getProfile(@Request() req) {
+  //     return req.user;
+  //    }
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
   getItem() {
     return this.itemService.getItem()
   }
