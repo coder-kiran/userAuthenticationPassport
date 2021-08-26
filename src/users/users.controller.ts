@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { ItemService } from 'src/Items/items.services';
 import { UserLoginDTO } from './dto/login-dto.dto';
@@ -24,7 +25,8 @@ var isphonenumberverified = false;
 @Controller('userroute')
 export class UserController {
 
-constructor(private readonly userService: UserService,private readonly itemService: ItemService) {}
+constructor(private readonly userService: UserService,private readonly itemService: ItemService,
+  private readonly authService: AuthService) {}
 
 
 @Post('signup')
@@ -54,8 +56,9 @@ signUpWithOtp(@Body() body) {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req){  
-    console.log('3. user guard accepted');     
-  return  `WELCOME, ${req.user.fname} ${req.user.lname}`;
+    console.log('3. user guard accepted');
+    return this.authService.login(req.user)   
+  //return  `WELCOME, ${req.user.fname} ${req.user.lname}`;
      }
 
   @Get('item')
